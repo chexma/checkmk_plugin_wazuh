@@ -3,11 +3,12 @@
 """Check Plugin: Wazuh API Health"""
 
 import json
+
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Service,
     Result,
+    Service,
     State,
 )
 
@@ -60,7 +61,9 @@ def check_wazuh_api(section):
         details_parts.append(f"Installation path: {section['manager_path']}")
 
     if section.get("manager_tz_name"):
-        details_parts.append(f"Timezone: {section['manager_tz_name']} ({section.get('manager_tz_offset', '')})")
+        details_parts.append(
+            f"Timezone: {section['manager_tz_name']} ({section.get('manager_tz_offset', '')})"
+        )
 
     if section.get("timestamp"):
         details_parts.append(f"API timestamp: {section['timestamp']}")

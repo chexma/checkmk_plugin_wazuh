@@ -3,13 +3,14 @@
 """Check Plugin: Wazuh Ruleset Status"""
 
 import json
+
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Service,
-    Result,
-    State,
     Metric,
+    Result,
+    Service,
+    State,
 )
 
 

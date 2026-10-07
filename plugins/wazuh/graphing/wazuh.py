@@ -3,15 +3,14 @@
 """Metrics, Graphs and Perfometers for Wazuh"""
 
 from cmk.graphing.v1 import Title
-from cmk.graphing.v1.metrics import (
-    Metric,
-    Color,
-    Unit,
-    DecimalNotation,
-)
 from cmk.graphing.v1.graphs import Graph, MinimalRange
-from cmk.graphing.v1.perfometers import Perfometer, FocusRange, Closed, Open
-
+from cmk.graphing.v1.metrics import (
+    Color,
+    DecimalNotation,
+    Metric,
+    Unit,
+)
+from cmk.graphing.v1.perfometers import Closed, FocusRange, Open, Perfometer
 
 # ============================================================================
 # UNITS

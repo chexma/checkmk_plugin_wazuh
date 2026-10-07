@@ -5,13 +5,14 @@
 import json
 import time
 from datetime import datetime
+
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Service,
-    Result,
-    State,
     HostLabel,
+    Result,
+    Service,
+    State,
     check_levels,
     render,
 )

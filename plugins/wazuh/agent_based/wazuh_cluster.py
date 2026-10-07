@@ -3,13 +3,14 @@
 """Check Plugin: Wazuh Cluster Status"""
 
 import json
+
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Service,
-    Result,
-    State,
     Metric,
+    Result,
+    Service,
+    State,
 )
 
 

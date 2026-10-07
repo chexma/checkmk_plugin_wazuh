@@ -2,15 +2,15 @@
 # Copyright (C) 2024 CheckMK GmbH - License: GNU General Public License v2
 """Ruleset for Wazuh Special Agent"""
 
-from cmk.rulesets.v1 import Title, Label, Help
+from cmk.rulesets.v1 import Help, Label, Title
 from cmk.rulesets.v1.form_specs import (
-    Dictionary,
-    DictElement,
-    String,
-    Integer,
-    Password,
     BooleanChoice,
     DefaultValue,
+    DictElement,
+    Dictionary,
+    Integer,
+    Password,
+    String,
     migrate_to_password,
 )
 from cmk.rulesets.v1.rule_specs import SpecialAgent, Topic

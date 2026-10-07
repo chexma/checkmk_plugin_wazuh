@@ -3,13 +3,14 @@
 """Check Plugin: Wazuh Agent Statistics"""
 
 import json
+
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Service,
-    Result,
-    State,
     Metric,
+    Result,
+    Service,
+    State,
     check_levels,
     render,
 )

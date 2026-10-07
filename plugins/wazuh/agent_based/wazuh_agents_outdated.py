@@ -3,13 +3,14 @@
 """Check Plugin: Wazuh Outdated Agents"""
 
 import json
+
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Service,
-    Result,
-    State,
     Metric,
+    Result,
+    Service,
+    State,
     check_levels,
 )
 
@@ -49,8 +50,7 @@ def check_wazuh_agents_outdated(params, section):
 
     if agents:
         agent_list = ", ".join(
-            f"{a.get('name', 'unknown')} ({a.get('version', '?')})"
-            for a in agents[:5]
+            f"{a.get('name', 'unknown')} ({a.get('version', '?')})" for a in agents[:5]
         )
         if total > 5:
             agent_list += f" ... and {total - 5} more"

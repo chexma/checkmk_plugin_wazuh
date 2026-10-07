@@ -2,26 +2,26 @@
 # Copyright (C) 2024 CheckMK GmbH - License: GNU General Public License v2
 """Check Parameter Rulesets for Wazuh"""
 
-from cmk.rulesets.v1 import Title, Help
+from cmk.rulesets.v1 import Help, Title
 from cmk.rulesets.v1.form_specs import (
-    Dictionary,
+    DefaultValue,
     DictElement,
+    Dictionary,
     Float,
     Integer,
-    SimpleLevels,
     LevelDirection,
-    DefaultValue,
     List,
-    String,
+    SimpleLevels,
     SingleChoice,
     SingleChoiceElement,
+    String,
 )
 from cmk.rulesets.v1.rule_specs import CheckParameters, HostCondition, Topic
-
 
 # ============================================================================
 # Wazuh Agents Summary
 # ============================================================================
+
 
 def _wazuh_agents_form():
     return Dictionary(
@@ -89,6 +89,7 @@ rule_spec_wazuh_agents = CheckParameters(
 # Wazuh Manager
 # ============================================================================
 
+
 def _wazuh_manager_form():
     return Dictionary(
         title=Title("Wazuh Manager Settings"),
@@ -126,12 +127,11 @@ rule_spec_wazuh_manager = CheckParameters(
 # Wazuh Cluster
 # ============================================================================
 
+
 def _wazuh_cluster_form():
     return Dictionary(
         title=Title("Wazuh Cluster Settings"),
-        help_text=Help(
-            "Configure thresholds for Wazuh cluster monitoring."
-        ),
+        help_text=Help("Configure thresholds for Wazuh cluster monitoring."),
         elements={
             "expected_nodes": DictElement(
                 required=False,
@@ -173,12 +173,11 @@ rule_spec_wazuh_cluster = CheckParameters(
 # Wazuh Agent (individual, piggyback)
 # ============================================================================
 
+
 def _wazuh_agent_form():
     return Dictionary(
         title=Title("Wazuh Agent Settings"),
-        help_text=Help(
-            "Configure thresholds for individual Wazuh agent monitoring."
-        ),
+        help_text=Help("Configure thresholds for individual Wazuh agent monitoring."),
         elements={
             "disconnected_state": DictElement(
                 required=False,
@@ -221,12 +220,11 @@ rule_spec_wazuh_agent = CheckParameters(
 # Wazuh Daemon Statistics
 # ============================================================================
 
+
 def _wazuh_daemon_stats_form():
     return Dictionary(
         title=Title("Wazuh Daemon Statistics Settings"),
-        help_text=Help(
-            "Configure thresholds for Wazuh daemon statistics monitoring."
-        ),
+        help_text=Help("Configure thresholds for Wazuh daemon statistics monitoring."),
         elements={
             "queue_usage_levels": DictElement(
                 required=False,
@@ -255,12 +253,11 @@ rule_spec_wazuh_daemon_stats = CheckParameters(
 # Wazuh Logs
 # ============================================================================
 
+
 def _wazuh_logs_form():
     return Dictionary(
         title=Title("Wazuh Logs Settings"),
-        help_text=Help(
-            "Configure thresholds for Wazuh log monitoring."
-        ),
+        help_text=Help("Configure thresholds for Wazuh log monitoring."),
         elements={
             "error_levels": DictElement(
                 required=False,
@@ -299,20 +296,17 @@ rule_spec_wazuh_logs = CheckParameters(
 # Wazuh Ruleset
 # ============================================================================
 
+
 def _wazuh_ruleset_form():
     return Dictionary(
         title=Title("Wazuh Ruleset Settings"),
-        help_text=Help(
-            "Configure thresholds for Wazuh ruleset monitoring."
-        ),
+        help_text=Help("Configure thresholds for Wazuh ruleset monitoring."),
         elements={
             "min_rules": DictElement(
                 required=False,
                 parameter_form=Integer(
                     title=Title("Minimum number of rules"),
-                    help_text=Help(
-                        "Alert if the number of active rules falls below this value."
-                    ),
+                    help_text=Help("Alert if the number of active rules falls below this value."),
                 ),
             ),
             "min_decoders": DictElement(
@@ -341,12 +335,11 @@ rule_spec_wazuh_ruleset = CheckParameters(
 # Wazuh Agents Outdated
 # ============================================================================
 
+
 def _wazuh_agents_outdated_form():
     return Dictionary(
         title=Title("Wazuh Outdated Agents Settings"),
-        help_text=Help(
-            "Configure thresholds for Wazuh outdated agents monitoring."
-        ),
+        help_text=Help("Configure thresholds for Wazuh outdated agents monitoring."),
         elements={
             "outdated_levels": DictElement(
                 required=False,
@@ -375,12 +368,11 @@ rule_spec_wazuh_agents_outdated = CheckParameters(
 # Wazuh Tasks
 # ============================================================================
 
+
 def _wazuh_tasks_form():
     return Dictionary(
         title=Title("Wazuh Tasks Settings"),
-        help_text=Help(
-            "Configure thresholds for Wazuh task monitoring."
-        ),
+        help_text=Help("Configure thresholds for Wazuh task monitoring."),
         elements={
             "failed_levels": DictElement(
                 required=False,
@@ -408,6 +400,7 @@ rule_spec_wazuh_tasks = CheckParameters(
 # ============================================================================
 # Wazuh SCA (Security Configuration Assessment)
 # ============================================================================
+
 
 def _wazuh_sca_form():
     return Dictionary(
@@ -453,12 +446,11 @@ rule_spec_wazuh_sca = CheckParameters(
 # Wazuh Syscheck
 # ============================================================================
 
+
 def _wazuh_syscheck_form():
     return Dictionary(
         title=Title("Wazuh Syscheck Settings"),
-        help_text=Help(
-            "Configure thresholds for Wazuh Syscheck (File Integrity Monitoring)."
-        ),
+        help_text=Help("Configure thresholds for Wazuh Syscheck (File Integrity Monitoring)."),
         elements={
             "scan_age_levels": DictElement(
                 required=False,

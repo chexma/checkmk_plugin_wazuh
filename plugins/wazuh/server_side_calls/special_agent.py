@@ -3,9 +3,9 @@
 """Server-Side Calls configuration for Wazuh Special Agent"""
 
 from cmk.server_side_calls.v1 import (
-    noop_parser,
-    SpecialAgentConfig,
     SpecialAgentCommand,
+    SpecialAgentConfig,
+    noop_parser,
 )
 
 
@@ -20,7 +20,8 @@ def _agent_arguments(params, host_config):
             - host_config.alias: Host alias
     """
     args = [
-        "--hostname", host_config.primary_ip_config.address,
+        "--hostname",
+        host_config.primary_ip_config.address,
     ]
 
     if "port" in params:

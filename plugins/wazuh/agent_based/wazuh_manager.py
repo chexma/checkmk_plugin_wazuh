@@ -3,14 +3,14 @@
 """Check Plugin: Wazuh Manager Processes"""
 
 import json
+
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Service,
     Result,
+    Service,
     State,
 )
-
 
 # Critical processes that must be running
 DEFAULT_REQUIRED_PROCESSES = [
