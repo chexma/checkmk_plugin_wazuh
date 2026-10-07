@@ -1,0 +1,32 @@
+{'author': 'Andre Eckstein & Elvis Ibrahimi',
+ 'description': 'Rest based special agent plugin for monitoring Wazuh '
+                'SIEM/XDR.\n'
+                '\n'
+                'Services:\n'
+                '- Wazuh API, Manager, Cluster, Agents summary\n'
+                '- Daemon statistics, Logs, Ruleset, Outdated agents, Tasks\n'
+                '- Piggyback: Agent status, SCA, Syscheck per agent',
+ 'download_url': 'https://github.com/chexma/checkmk_plugin_wazuh',
+ 'files': {'cmk_addons_plugins': ['wazuh/agent_based/wazuh_agent.py',
+                                  'wazuh/agent_based/wazuh_agents.py',
+                                  'wazuh/agent_based/wazuh_agents_outdated.py',
+                                  'wazuh/agent_based/wazuh_api.py',
+                                  'wazuh/agent_based/wazuh_cluster.py',
+                                  'wazuh/agent_based/wazuh_daemon_stats.py',
+                                  'wazuh/agent_based/wazuh_logs.py',
+                                  'wazuh/agent_based/wazuh_manager.py',
+                                  'wazuh/agent_based/wazuh_ruleset.py',
+                                  'wazuh/agent_based/wazuh_sca.py',
+                                  'wazuh/agent_based/wazuh_syscheck.py',
+                                  'wazuh/agent_based/wazuh_tasks.py',
+                                  'wazuh/graphing/wazuh.py',
+                                  'wazuh/libexec/agent_wazuh',
+                                  'wazuh/rulesets/check_params.py',
+                                  'wazuh/rulesets/special_agent.py',
+                                  'wazuh/server_side_calls/special_agent.py']},
+ 'name': 'wazuh',
+ 'title': 'Wazuh SIEM/XDR',
+ 'version': '0.0.4',
+ 'version.min_required': '2.4.0p1',
+ 'version.packaged': 'cmk-mkp-tool 1.0.0',
+ 'version.usable_until': None}

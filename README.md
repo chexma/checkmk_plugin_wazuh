@@ -50,7 +50,7 @@ A CheckMK 2.4 Special Agent plugin for monitoring [Wazuh](https://wazuh.com/) SI
 
 ## Installation
 
-Install the MKP in your checkmk site.
+Download the latest MKP from the [Releases page](https://github.com/chexma/checkmk_plugin_wazuh/releases/latest) and install it in your checkmk site.
 
 ## Configuration
 
