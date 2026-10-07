@@ -1,5 +1,10 @@
 # CHANGELOG
 
+- **0.0.5** - 07.10.2026 - Bug fix, maintenance
+  - Fixed default scan age levels of the Wazuh Syscheck check: they did not validate against its ruleset
+  - Moved the repository to checkmk-plugin-template (devcontainer for Checkmk 2.5, CI)
+  - Code formatted with black/isort; flake8 findings fixed
+
 - **0.0.4** - 26.11.2025 - Bug fix
   - Fixed agent summary parsing: API returns `data.connection.*` not `data.affected_items[0].*`
 

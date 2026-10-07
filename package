@@ -26,7 +26,7 @@
                                   'wazuh/server_side_calls/special_agent.py']},
  'name': 'wazuh',
  'title': 'Wazuh SIEM/XDR',
- 'version': '0.0.4',
+ 'version': '0.0.5',
  'version.min_required': '2.4.0p1',
  'version.packaged': 'cmk-mkp-tool 1.0.0',
  'version.usable_until': None}
