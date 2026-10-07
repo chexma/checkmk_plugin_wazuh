@@ -1,5 +1,7 @@
 """Special agent: API responses (shaped like the API spec) to agent sections."""
 
+import json
+
 import api_responses as api
 import pytest
 
@@ -7,6 +9,7 @@ import pytest
 def test_api_section(agent, section_json):
     data = section_json(agent.output_api_section, api.API_INFO, api.MANAGER_INFO)
     assert data["api_version"] == "4.14.1"
+    assert "manager_name" not in data  # GET /manager/info has no name
     assert data["hostname"] == "wazuh"
     assert data["manager_version"] == "v4.14.1"
     assert data["manager_type"] == "server"
@@ -26,16 +29,17 @@ def test_cluster_section_disabled(agent, section_json):
     assert data["running"] is False
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="GET /cluster/status returns data.enabled, the agent reads data.affected_items[0]",
-)
 def test_cluster_section_running(agent, section_json):
     data = section_json(
-        agent.output_cluster_section, api.CLUSTER_STATUS, api.CLUSTER_HEALTHCHECK, None
+        agent.output_cluster_section,
+        api.CLUSTER_STATUS,
+        api.CLUSTER_HEALTHCHECK,
+        api.CLUSTER_LOCAL_INFO,
     )
     assert data["enabled"] is True
     assert data["running"] is True
+    assert data["node_name"] == "master-node"
+    assert data["node_type"] == "master"
     assert [n["name"] for n in data["nodes"]] == ["master-node", "worker1", "worker2"]
 
 
@@ -127,3 +131,50 @@ def test_piggyback_all_agents_with_sca_and_syscheck(agent, run_output):
         ("web-server-01", "wazuh_rootcheck"),
         ("db01", "wazuh_agent"),
     }
+
+
+class FakeAPIClient(FakeClient):
+    """Replaces WazuhAPIClient in main(); answers every call with the spec examples."""
+
+    def __init__(self, **kwargs):
+        pass
+
+    get_api_info = staticmethod(lambda: api.API_INFO)
+    get_manager_info = staticmethod(lambda: api.MANAGER_INFO)
+    get_manager_status = staticmethod(lambda: api.MANAGER_STATUS)
+    get_cluster_status = staticmethod(lambda: api.CLUSTER_STATUS)
+    get_cluster_health = staticmethod(lambda: api.CLUSTER_HEALTHCHECK)
+    get_cluster_local_info = staticmethod(lambda: api.CLUSTER_LOCAL_INFO)
+    get_agents_summary = staticmethod(lambda: api.AGENTS_SUMMARY)
+    get_overview_agents = staticmethod(lambda: {})
+    get_daemon_stats = staticmethod(lambda: api.DAEMON_STATS)
+    get_logs_summary = staticmethod(lambda: api.LOGS_SUMMARY)
+    get_rules_summary = staticmethod(lambda: api.RULES)
+    get_decoders_summary = staticmethod(lambda: api.DECODERS)
+    get_agents_outdated = staticmethod(lambda: api.AGENTS_OUTDATED)
+    get_tasks = staticmethod(lambda: api.TASKS)
+    get_agents = staticmethod(lambda: api.AGENTS)
+
+
+def test_main(agent, run_output, monkeypatch):
+    monkeypatch.setattr(agent, "WazuhAPIClient", FakeAPIClient)
+    monkeypatch.setattr(
+        "sys.argv",
+        ["agent_wazuh", "--hostname", "wazuh", "--password", "x", "--piggyback-agents"],
+    )
+    sections = run_output(agent.main)
+    assert {name for host, name in sections if host == ""} == {
+        "wazuh_api",
+        "wazuh_manager",
+        "wazuh_cluster",
+        "wazuh_agents",
+        "wazuh_daemon_stats",
+        "wazuh_logs",
+        "wazuh_ruleset",
+        "wazuh_agents_outdated",
+        "wazuh_tasks",
+    }
+    cluster = json.loads(sections[("", "wazuh_cluster")][0][0])
+    assert cluster["running"] is True
+    assert len(cluster["nodes"]) == 3
+    assert ("db01", "wazuh_agent") in sections

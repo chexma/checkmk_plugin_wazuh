@@ -113,7 +113,8 @@ def check_wazuh_agent(params, section):
     if last_keepalive:
         keepalive_ts = _parse_iso_datetime(last_keepalive)
         if keepalive_ts:
-            keepalive_age = time.time() - keepalive_ts
+            # Clamp: the manager's clock may run ahead of the Checkmk server's
+            keepalive_age = max(0.0, time.time() - keepalive_ts)
             yield from check_levels(
                 keepalive_age,
                 levels_upper=params.get("levels_keepalive_age"),

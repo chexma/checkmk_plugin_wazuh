@@ -153,8 +153,8 @@ class WazuhAPIClient:
     def get_cluster_status(self) -> dict:
         return self._request("/cluster/status")
 
-    def get_cluster_nodes(self) -> dict:
-        return self._request("/cluster/nodes")
+    def get_cluster_local_info(self) -> dict:
+        return self._request("/cluster/local/info")
 
     def get_cluster_health(self) -> dict:
         return self._request("/cluster/healthcheck")
@@ -227,7 +227,6 @@ def output_api_section(api_info: dict, manager_info: dict) -> None:
         "revision": api_data.get("revision", 0),
         "manager_version": manager_data.get("version", "unknown"),
         "manager_type": manager_data.get("type", "server"),
-        "manager_name": manager_data.get("name", "unknown"),
         "manager_path": manager_data.get("path", ""),
         "manager_tz_name": manager_data.get("tz_name", ""),
         "manager_tz_offset": manager_data.get("tz_offset", ""),
@@ -247,22 +246,25 @@ def output_manager_section(status: dict) -> None:
 def output_cluster_section(
     cluster_status: dict,
     cluster_health: Optional[dict],
-    nodes: Optional[dict]
+    local_info: Optional[dict]
 ) -> None:
     """Section: Cluster status"""
     print("<<<wazuh_cluster:sep(0)>>>")
 
-    status_items = cluster_status.get("data", {}).get("affected_items", [{}])
-    status_data = status_items[0] if status_items else {}
+    # GET /cluster/status returns data.enabled/data.running directly
+    status_data = cluster_status.get("data", {})
 
     enabled = status_data.get("enabled") == "yes"
     running = status_data.get("running") == "yes"
 
+    local_items = (local_info or {}).get("data", {}).get("affected_items", [])
+    local_data = local_items[0] if local_items else {}
+
     data = {
         "enabled": enabled,
         "running": running,
-        "node_name": status_data.get("node_name", ""),
-        "node_type": status_data.get("node_type", ""),
+        "node_name": local_data.get("node", ""),
+        "node_type": local_data.get("type", ""),
     }
 
     if cluster_health and enabled and running:
@@ -593,20 +595,19 @@ def main() -> None:
         logger.debug("Fetching cluster status...")
         cluster_status = client.get_cluster_status()
         cluster_health = None
-        nodes = None
+        local_info = None
 
-        status_items = cluster_status.get("data", {}).get("affected_items", [{}])
-        status_data = status_items[0] if status_items else {}
+        status_data = cluster_status.get("data", {})
 
         if status_data.get("enabled") == "yes" and status_data.get("running") == "yes":
             logger.debug("Fetching cluster health...")
             try:
                 cluster_health = client.get_cluster_health()
-                nodes = client.get_cluster_nodes()
+                local_info = client.get_cluster_local_info()
             except Exception as e:
                 logger.warning(f"Could not fetch cluster details: {e}")
 
-        output_cluster_section(cluster_status, cluster_health, nodes)
+        output_cluster_section(cluster_status, cluster_health, local_info)
 
         # Agents Summary with Overview
         logger.debug("Fetching agents summary...")

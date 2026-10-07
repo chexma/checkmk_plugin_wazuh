@@ -38,7 +38,6 @@ def check_wazuh_api(section):
     api_version = section.get("api_version", "unknown")
     manager_version = section.get("manager_version", "unknown")
     hostname = section.get("hostname", "unknown")
-    manager_name = section.get("manager_name", "unknown")
     manager_type = section.get("manager_type", "server")
 
     yield Result(
@@ -52,10 +51,7 @@ def check_wazuh_api(section):
     )
 
     # Additional details
-    details_parts = [
-        f"Manager name: {manager_name}",
-        f"Manager type: {manager_type}",
-    ]
+    details_parts = [f"Manager type: {manager_type}"]
 
     if section.get("manager_path"):
         details_parts.append(f"Installation path: {section['manager_path']}")

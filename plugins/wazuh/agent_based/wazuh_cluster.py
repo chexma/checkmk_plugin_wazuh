@@ -38,18 +38,14 @@ def check_wazuh_cluster(params, section):
 
     enabled = section.get("enabled", False)
     running = section.get("running", False)
-    node_name = section.get("node_name", "unknown")
-    node_type = section.get("node_type", "unknown")
+    node_name = section.get("node_name") or "unknown"
+    node_type = section.get("node_type") or "unknown"
 
     # Cluster not enabled - single node mode
     if not enabled:
         yield Result(
             state=State.OK,
             summary="Cluster disabled (single-node mode)",
-        )
-        yield Result(
-            state=State.OK,
-            summary=f"Node: {node_name} ({node_type})",
         )
         return
 
@@ -58,10 +54,6 @@ def check_wazuh_cluster(params, section):
         yield Result(
             state=State.CRIT,
             summary="Cluster enabled but not running!",
-        )
-        yield Result(
-            state=State.OK,
-            summary=f"Node: {node_name} ({node_type})",
         )
         return
 

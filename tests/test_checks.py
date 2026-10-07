@@ -136,20 +136,23 @@ def test_cluster_disabled(agent, section):
     assert _summaries(results)[0] == "Cluster disabled (single-node mode)"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="GET /cluster/status returns data.enabled, the agent reads data.affected_items[0]",
-)
 def test_cluster_running_from_api(agent, section):
     sec = section(
         wazuh_cluster.parse_wazuh_cluster,
         agent.output_cluster_section,
         api.CLUSTER_STATUS,
         api.CLUSTER_HEALTHCHECK,
-        None,
+        api.CLUSTER_LOCAL_INFO,
     )
     results = list(wazuh_cluster.check_wazuh_cluster({"sync_status": "warn"}, sec))
-    assert _summaries(results)[0] == "Cluster running"
+    # worker2 has an integrity sync in progress
+    assert _state(results) is State.WARN
+    assert _summaries(results)[:3] == [
+        "Cluster running",
+        "This node: master-node (master)",
+        "3 node(s) in cluster",
+    ]
+    assert _metrics(results) == {"wazuh_cluster_nodes": 3, "wazuh_cluster_active_agents": 9}
 
 
 CLUSTER_SECTION = {
@@ -282,10 +285,6 @@ def test_daemon_db(daemon_section):
     assert "Queries: 5000" in _summaries(results)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="the API has metrics.time.execution, the check reads metrics.queries.time.execution",
-)
 def test_daemon_db_execution_time(daemon_section):
     results = list(
         wazuh_daemon_stats.check_wazuh_daemon_stats("wazuh-db", _daemon_params(), daemon_section)
@@ -293,14 +292,13 @@ def test_daemon_db_execution_time(daemon_section):
     assert _metrics(results)["wazuh_db_execution_time"] == 1234
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="render.timespan raises on negative uptime (manager clock ahead of the Checkmk server)",
-)
 def test_daemon_clock_skew(daemon_section, monkeypatch):
     uptime = datetime.fromisoformat("2022-07-21 10:09:20+00:00").timestamp()
     monkeypatch.setattr(wazuh_daemon_stats.time, "time", lambda: uptime - 60)
-    list(wazuh_daemon_stats.check_wazuh_daemon_stats("wazuh-db", _daemon_params(), daemon_section))
+    results = list(
+        wazuh_daemon_stats.check_wazuh_daemon_stats("wazuh-db", _daemon_params(), daemon_section)
+    )
+    assert "Uptime: 0 seconds" in _summaries(results)
 
 
 def test_daemon_missing(daemon_section):
@@ -432,6 +430,16 @@ def test_agent_disconnected(piggyback, setting, expected):
     assert _state(results) is expected
 
 
+def test_agent_keepalive_clock_skew(piggyback, monkeypatch):
+    keepalive = datetime.fromisoformat("2021-05-26T12:40:40+00:00").timestamp()
+    monkeypatch.setattr(wazuh_agent.time, "time", lambda: keepalive - 60)
+    sec = wazuh_agent.parse_wazuh_agent(piggyback[("web-server-01", "wazuh_agent")])
+    results = list(
+        wazuh_agent.check_wazuh_agent(_defaults(wazuh_agent.check_plugin_wazuh_agent), sec)
+    )
+    assert _state(results) is State.OK
+
+
 def test_sca(piggyback):
     sec = wazuh_sca.parse_wazuh_sca(piggyback[("web-server-01", "wazuh_sca")])
     assert [s.item for s in wazuh_sca.discover_wazuh_sca(sec)] == ["cis_ubuntu20-04"]
@@ -466,6 +474,14 @@ def test_syscheck_age(piggyback, monkeypatch, age, expected):
         )
     )
     assert _state(results) is expected
+
+
+def test_syscheck_clock_skew(piggyback, monkeypatch):
+    sec = wazuh_syscheck.parse_wazuh_syscheck(piggyback[("web-server-01", "wazuh_syscheck")])
+    end = datetime.fromisoformat("2021-05-28T12:11:33+00:00").timestamp()
+    monkeypatch.setattr(wazuh_syscheck.time, "time", lambda: end - 60)
+    results = list(wazuh_syscheck.check_wazuh_syscheck({}, sec))
+    assert _state(results) is State.OK
 
 
 def test_syscheck_in_progress():

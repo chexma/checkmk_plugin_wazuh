@@ -71,7 +71,8 @@ def check_wazuh_syscheck(params, section):
     if end_time:
         end_ts = _parse_iso_datetime(end_time)
         if end_ts:
-            age_seconds = time.time() - end_ts
+            # Clamp: the manager's clock may run ahead of the Checkmk server's
+            age_seconds = max(0.0, time.time() - end_ts)
             yield Result(
                 state=State.OK,
                 summary=f"Last scan: {render.timespan(age_seconds)} ago",

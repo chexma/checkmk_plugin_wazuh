@@ -70,6 +70,16 @@ CLUSTER_STATUS = {"data": {"enabled": "yes", "running": "yes"}, "error": 0}
 
 CLUSTER_STATUS_DISABLED = {"data": {"enabled": "no", "running": "no"}, "error": 0}
 
+CLUSTER_LOCAL_INFO = {
+    "data": {
+        "affected_items": [{"node": "master-node", "cluster": "wazuh", "type": "master"}],
+        "total_affected_items": 1,
+        "total_failed_items": 0,
+        "failed_items": [],
+    },
+    "error": 0,
+}
+
 CLUSTER_HEALTHCHECK = {
     "data": {
         "affected_items": [

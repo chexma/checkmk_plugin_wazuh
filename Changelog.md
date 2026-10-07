@@ -1,7 +1,13 @@
 # CHANGELOG
 
 - **0.0.5** - 07.10.2026 - Bug fix, maintenance
+  - Fixed Wazuh Cluster always reporting "disabled": `GET /cluster/status` returns `data.enabled`, not `data.affected_items[0].enabled`
+  - Wazuh Cluster: node name and type now come from `GET /cluster/local/info`
+  - Fixed wazuh-db execution time metric (always 0)
+  - Fixed crashes of Daemon, Agent and Syscheck checks when the manager clock runs ahead of the Checkmk server
+  - Wazuh API: removed "Manager name" (the API does not provide it)
   - Fixed default scan age levels of the Wazuh Syscheck check: they did not validate against its ruleset
+  - Added unit tests based on the Wazuh API spec
   - Moved the repository to checkmk-plugin-template (devcontainer for Checkmk 2.5, CI)
   - Code formatted with black/isort; flake8 findings fixed
 

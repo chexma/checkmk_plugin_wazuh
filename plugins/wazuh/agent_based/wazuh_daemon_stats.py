@@ -64,7 +64,8 @@ def check_wazuh_daemon_stats(item, params, section):
     # Calculate uptime
     uptime_ts = _parse_iso_datetime(uptime_str)
     if uptime_ts:
-        uptime_seconds = time.time() - uptime_ts
+        # Clamp: the manager's clock may run ahead of the Checkmk server's
+        uptime_seconds = max(0.0, time.time() - uptime_ts)
         yield Result(
             state=State.OK,
             summary=f"Uptime: {render.timespan(uptime_seconds)}",
@@ -129,7 +130,7 @@ def check_wazuh_daemon_stats(item, params, section):
         yield Metric("wazuh_db_queries", received)
 
         # Execution time
-        exec_time = queries.get("time", {}).get("execution", 0)
+        exec_time = metrics.get("time", {}).get("execution", 0)
         yield Metric("wazuh_db_execution_time", exec_time)
 
 
