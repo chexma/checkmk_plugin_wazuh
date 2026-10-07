@@ -457,7 +457,8 @@ def _wazuh_syscheck_form():
                 parameter_form=SimpleLevels(
                     title=Title("Scan age"),
                     help_text=Help(
-                        "Alert if the last syscheck scan is older than these thresholds (in seconds)."
+                        "Alert if the last syscheck scan is older than these thresholds "
+                        "(in seconds)."
                     ),
                     form_spec_template=Integer(unit_symbol="s"),
                     level_direction=LevelDirection.UPPER,

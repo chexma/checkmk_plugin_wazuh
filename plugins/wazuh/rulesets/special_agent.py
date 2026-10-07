@@ -2,7 +2,7 @@
 # Copyright (C) 2024 CheckMK GmbH - License: GNU General Public License v2
 """Ruleset for Wazuh Special Agent"""
 
-from cmk.rulesets.v1 import Help, Label, Title
+from cmk.rulesets.v1 import Help, Title
 from cmk.rulesets.v1.form_specs import (
     BooleanChoice,
     DefaultValue,

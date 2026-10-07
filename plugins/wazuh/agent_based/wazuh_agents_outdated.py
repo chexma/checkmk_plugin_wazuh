@@ -7,7 +7,6 @@ import json
 from cmk.agent_based.v2 import (
     AgentSection,
     CheckPlugin,
-    Metric,
     Result,
     Service,
     State,

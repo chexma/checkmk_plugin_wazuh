@@ -74,7 +74,6 @@ def check_wazuh_agent(params, section):
         return
 
     agent_id = section.get("id", "unknown")
-    name = section.get("name", "unknown")
     status = section.get("status", "unknown")
     version = section.get("version", "unknown")
     ip = section.get("ip", "unknown")

@@ -110,7 +110,7 @@ check_plugin_wazuh_syscheck = CheckPlugin(
     discovery_function=discover_wazuh_syscheck,
     check_function=check_wazuh_syscheck,
     check_default_parameters={
-        "scan_age_levels": ("fixed", (86400.0, 172800.0)),  # 1 day, 2 days
+        "scan_age_levels": ("fixed", (86400, 172800)),  # 1 day, 2 days
     },
     check_ruleset_name="wazuh_syscheck",
 )
